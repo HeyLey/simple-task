@@ -7,31 +7,40 @@
 */
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class TaskProgLab {
 
-    public static char[][] allVariations(char[] array, int var) {
-        int len = array.length;
-        int perm = (int) Math.pow(len, var);
-        char[][] res = new char[perm][var];
+    int n = 200;
+    char[] str = {'9', '8', '7', '6', '5', '4', '3', '2', '1', '0'};
+    char[] ops = {' ', '+', '-'};
+    List<String> result = new ArrayList<>();
 
-        for (int i = 0; i < var; i++) {
-            int v = (int) Math.pow(len, i);
-            for (int n = 0; n < perm; ) {
-                for (int a = 0; a < len; a++) {
-                    for (int m = 0; m < v; m++) {
-                        res[n][i] = array[a];
-                        n++;
-                    }
-                }
-            }
-        }
-
-        return res;
+    // Всего вариантов: 3^9 = 19683
+    void generate() {
+        int var = str.length - 1;
+        char[] res = new char[var];
+        generateRec(res, 0);
     }
 
-    public static String mergeChars(char[] str, char[] var) {
+    void generateRec(char[] res, int pos) {
+        if (pos == res.length) {
+            String s = merge(str, res);
+            long eval = evaluate(s);
+            if (eval == n) {
+                result.add(s);
+            }
+        } else {
+            for (int j = 0; j < ops.length; j++) {
+                res[pos] = ops[j];
+                generateRec(res, pos+1);
+            }
+        }
+    }
+
+
+    public static String merge(char[] str, char[] var) {
         char res[] = new char[str.length + var.length];
         int j = 0, k = 0;
 
@@ -74,28 +83,8 @@ public class TaskProgLab {
     }
 
     public static void main(String[] args) {
-        int n = 200;
-        char[] str = {'9', '8', '7', '6', '5', '4', '3', '2', '1', '0'};
-        char[] ops = {' ', '+', '-'};
-
-        // Всего вариантов: 3^9 = 19683
-
-        char[][] variations = allVariations(ops, 9);
-       // System.out.println(variations.length);
-
-        List<String> result = new ArrayList<>();
-
-
-        for (char[] var : variations) {
-            String s = mergeChars(str, var);
-            long eval = evaluate(s);
-            if (eval == n) {
-                result.add(s);
-            }
-        }
-
-        // System.out.println(result.size());
-        System.out.println(result);
-
+        TaskProgLab task = new TaskProgLab();
+        task.generate();
+        System.out.println(task.result);
     }
 }
